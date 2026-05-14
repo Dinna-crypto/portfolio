@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinesh Ankam — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a25;
+    --accent: #e8c547;
+    --accent2: #5e8aee;
+    --text: #f0ede8;
+    --muted: #7a7888;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 8rem 3rem 4rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(94,138,238,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 40%, rgba(232,197,71,0.08) 0%, transparent 70%);
+  }
+
+  .hero-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-inner {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+
+  h1.hero-name span {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-contact {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  .contact-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .contact-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, var(--muted), transparent);
+    animation: scrollLine 1.5s infinite;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: transparent; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.8rem;
+    border-radius: 4px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+
+  .skill-card:hover::before { transform: scaleX(1); }
+  .skill-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); }
+
+  .skill-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+  }
+
+  /* ── PROJECTS ── */
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s;
+  }
+
+  .project-card:hover::after { transform: scaleX(1); }
+  .project-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+
+  .project-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .project-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-supervisor {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .project-desc li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.2rem;
+    position: relative;
+    list-style: none;
+  }
+
+  .project-desc li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tech-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.25rem 0.65rem;
+    background: rgba(94,138,238,0.1);
+    border: 1px solid rgba(94,138,238,0.3);
+    color: var(--accent2);
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .edu-row {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr 1fr;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    align-items: center;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .edu-row:last-child { border-bottom: none; }
+  .edu-row:hover { background: var(--surface2); }
+
+  .edu-row.header {
+    background: var(--surface2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .edu-degree { font-weight: 500; font-size: 0.92rem; }
+  .edu-inst { color: var(--muted); font-size: 0.88rem; }
+
+  .edu-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .edu-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* ── ACHIEVEMENTS ── */
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .ach-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.6rem;
+    border-radius: 4px;
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .ach-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .ach-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--surface2);
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+  }
+
+  .ach-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .ach-text strong {
+    display: block;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    font-size: 0.92rem;
+  }
+
+  /* ── RESPONSIBILITY ── */
+  .resp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .resp-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .resp-text {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .resp-text strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  @keyframes scrollLine {
+    0%   { opacity: 1; transform: scaleY(1) translateY(0); }
+    100% { opacity: 0; transform: scaleY(0.5) translateY(20px); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 3rem; }
+
+    .edu-row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .edu-inst { grid-column: span 2; }
+
+    .project-card {
+      grid-template-columns: 1fr;
+    }
+
+    .project-period { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DA</div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Computer Science &amp; Engineering — IIT (BHU), Varanasi</div>
+    <h1 class="hero-name">Dinesh<br><span>Ankam</span></h1>
+    <p class="hero-sub">
+      Building intelligent systems at the intersection of machine learning, full-stack web development, and network analysis. Currently pursuing B.Tech CSE (2027).
+    </p>
+    <div class="hero-contact">
+      <a class="contact-chip" href="tel:9392732634">📞 9392732634</a>
+      <a class="contact-chip" href="mailto:dineshankam76@gmail.com">✉ dineshankam76@gmail.com</a>
+      <a class="contact-chip" href="#">📍 Andhra Pradesh, India</a>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-card-title">Languages</div>
+      <div class="skill-tags">
+        <span class="skill-tag">C</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">MySQL</span>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">Java</span>
+        <span class="skill-tag">Bash</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-card-title">Frameworks & Tools</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Django</span>
+        <span class="skill-tag">Spring Boot</span>
+        <span class="skill-tag">Bootstrap</span>
+        <span class="skill-tag">Maven</span>
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
+        <span class="skill-tag">Git / GitHub</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">VS Code</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-card-title">Data & ML</div>
+      <div class="skill-tags">
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">Matplotlib</span>
+        <span class="skill-tag">Scikit-learn</span>
+        <span class="skill-tag">PyTorch</span>
+        <span class="skill-tag">Scapy</span>
+        <span class="skill-tag">TShark / WireShark</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-card-title">Coursework</div>
+      <div class="skill-tags">
+        <span class="skill-tag">DSA</span>
+        <span class="skill-tag">Artificial Intelligence</span>
+        <span class="skill-tag">Machine Learning</span>
+        <span class="skill-tag">OS</span>
+        <span class="skill-tag">DBMS</span>
+        <span class="skill-tag">Probability & Stats</span>
+        <span class="skill-tag">Discrete Maths</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-card-title">Soft Skills</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Problem Solving</span>
+        <span class="skill-tag">Communication</span>
+        <span class="skill-tag">Decision Making</span>
+        <span class="skill-tag">Public Speaking</span>
+        <span class="skill-tag">Team Work</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-list">
+
+    <div class="project-card reveal">
+      <div>
+        <div class="project-name">IoT Network Traffic Classification</div>
+        <div class="project-supervisor">Under Prof. Mayank Swarnkar</div>
+        <ul class="project-desc">
+          <li>Explored a novel approach for classifying IoT network traffic using raw binary (bit-level) data instead of traditional features.</li>
+          <li>Extracted fixed-length segments (8 to 1024 bits) from network flows as ML input; tuned hyperparameters via GridSearchCV.</li>
+          <li>Tested multiple ML models — this bit-level approach outperformed many traditional feature-based methods across Accuracy, Precision, Recall and F1-score.</li>
+        </ul>
+        <div class="project-tech">
+          <span class="tech-badge">Python</span>
+          <span class="tech-badge">NumPy</span>
+          <span class="tech-badge">Pandas</span>
+          <span class="tech-badge">Scikit-learn</span>
+          <span class="tech-badge">Scapy</span>
+          <span class="tech-badge">WireShark</span>
+        </div>
+      </div>
+      <div class="project-period">Jan '25 — Apr '25</div>
+    </div>
+
+    <div class="project-card reveal">
+      <div>
+        <div class="project-name">Marketplace Web Application</div>
+        <div class="project-supervisor">Under Prof. Ravindranath Chowdary</div>
+        <ul class="project-desc">
+          <li>Built a full-stack marketplace using Spring Boot, Thymeleaf, MySQL, and JavaScript with industry-standard MVC architecture.</li>
+          <li>Implemented real-time buyer-seller product-specific chat with message ordering, timestamps, and notification-based seller access.</li>
+          <li>Designed a responsive multi-image product viewer and dynamic UI with role-based access control for buyers and sellers.</li>
+          <li>Developed a user reporting and admin moderation system with session-based authentication and chat history review for admins.</li>
+        </ul>
+        <div class="project-tech">
+          <span class="tech-badge">Spring Boot</span>
+          <span class="tech-badge">Thymeleaf</span>
+          <span class="tech-badge">MySQL</span>
+          <span class="tech-badge">JavaScript</span>
+          <span class="tech-badge">Maven</span>
+          <span class="tech-badge">MVC</span>
+        </div>
+      </div>
+      <div class="project-period">Jul '25 — Nov '25</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-list reveal">
+    <div class="edu-row header">
+      <div>Degree</div>
+      <div>Institution</div>
+      <div>Score</div>
+      <div>Year</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">B.Tech — Computer Science & Engineering</div>
+      <div class="edu-inst">IIT (BHU), Varanasi</div>
+      <div class="edu-score">6.72 CGPA</div>
+      <div class="edu-year">2027</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">CBSE — Class XII</div>
+      <div class="edu-inst">JNV Vadavathoor</div>
+      <div class="edu-score">77.80%</div>
+      <div class="edu-year">2023</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">CBSE — Class X</div>
+      <div class="edu-inst">J Navodaya Vidyalaya, Vennelavalasa</div>
+      <div class="edu-score">74.40%</div>
+      <div class="edu-year">2021</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Honours & Achievements</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="achievements-grid">
+    <div class="ach-card reveal">
+      <div class="ach-icon">🏅</div>
+      <div class="ach-text">
+        <strong>Dakshana JEE Coaching Program</strong>
+        Selected among top students from Jawahar Navodaya Vidyalayas nationwide for fully-funded JEE coaching.
+      </div>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">🎓</div>
+      <div class="ach-text">
+        <strong>JEE Advanced — AIR 76 (PWD)</strong>
+        All India PWD Rank 76 in JEE Advanced, conducted by IIT Guwahati.
+      </div>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">📊</div>
+      <div class="ach-text">
+        <strong>JEE Mains — AIR 354 (PWD)</strong>
+        All India PWD Rank 354 in JEE Mains, conducted by NTA.
+      </div>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">💻</div>
+      <div class="ach-text">
+        <strong>AP IIIT Entrance — State Rank 6704</strong>
+        Secured State Rank 6704 among 67,000+ candidates in the RGUKT entrance exam.
+      </div>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">🌐</div>
+      <div class="ach-text">
+        <strong>IMO — International Rank 384 (2015)</strong>
+        Achieved International Rank 384 in the International Mathematics Olympiad while in Grade 5, conducted by SOF.
+      </div>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">🚀</div>
+      <div class="ach-text">
+        <strong>Event Executive — Codefest '25</strong>
+        Drove participation growth through targeted social media campaigns and outreach for IIT BHU's flagship coding festival.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Crafted with precision &nbsp;·&nbsp; <span>Dinesh Ankam</span> &nbsp;·&nbsp; IIT (BHU) Varanasi &nbsp;·&nbsp; 2025</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</html>
